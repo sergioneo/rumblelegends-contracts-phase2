@@ -5,6 +5,7 @@ import "./AccessControl.sol";
 contract EggFactory is AccessControl{
     
     event EggOpened(address eggOwner, uint256 eggId, uint256 amount);
+    event EggBought(address eggOwner, uint256 eggId, uint256 amount);
     
     // @dev Sanity check that allows us to ensure that we are pointing to the
     //  right auction in our setEggFactoryAddress() call.
@@ -119,7 +120,7 @@ contract EggFactory is AccessControl{
         eggs[_eggId].buy += _amount;
         eggsOwned[msg.sender][_eggId] += _amount;
 
-        return true;
+        emit EggBought(msg.sender, _eggId, _amount);
     } 
     
     function currentEggPrice( uint256 _eggId ) public view returns (uint256) {
