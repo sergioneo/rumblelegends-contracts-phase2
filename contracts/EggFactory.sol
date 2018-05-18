@@ -19,6 +19,7 @@ contract EggFactory is AccessControl{
         uint256 stock; // max available eggs. zero for unlimited
         uint256 purchased; // purchased eggs
         uint256 customGene; // custom gene for future beast
+        uint256 maxAllowedToBuy; // max amount allowed to buy on single transaction. zero for unnlimited
         
         uint256 increase; // price increase. zero for no increase
         uint256 price; // base price of the egg
@@ -91,13 +92,14 @@ contract EggFactory is AccessControl{
     }
 
     // Add modifier of onlyCOO
-    function createEggScheme( uint256 _eggId, uint256 _stock, uint256 _customGene, uint256 _price, uint256 _increase, bool _active, bool _open ) public onlyCEO returns (bool){
+    function createEggScheme( uint256 _eggId, uint256 _stock, uint256 _maxAllowedToBuy, uint256 _customGene, uint256 _price, uint256 _increase, bool _active, bool _open ) public onlyCEO returns (bool){
         require(!eggExists(_eggId));
         
         eggs[_eggId].isEggScheme = true;
         
         eggs[_eggId].id = _eggId;
         eggs[_eggId].stock = _stock;
+        eggs[_eggId].maxAllowedToBuy = _maxAllowedToBuy;
         eggs[_eggId].purchased = 0;
         eggs[_eggId].customGene = _customGene;
         eggs[_eggId].price = _price;
@@ -113,6 +115,7 @@ contract EggFactory is AccessControl{
     function buyEgg(uint256 _eggId, uint256 _amount) public payable returns(bool){
         require(eggs[_eggId].active == true);
         require((currentEggPrice(_eggId)*_amount) == msg.value);
+        require(eggs[_eggId].maxAllowedToBuy == 0 || _amount<=eggs[_eggId].maxAllowedToBuy);
         require(eggs[_eggId].stock == 0 || eggs[_eggId].purchased+_amount<=eggs[_eggId].stock); // until max
         
         vaultAddress.transfer(msg.value); // transfer the amount to vault
