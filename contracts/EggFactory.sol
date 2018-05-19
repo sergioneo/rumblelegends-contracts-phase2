@@ -53,6 +53,19 @@ contract EggFactory is AccessControl{
         return eggs[_eggId].isEggScheme;
     }
 
+    function listEggsIds() external view returns(uint256[]){
+        return eggsIndexes;
+    }
+    
+    function listActiveEggs() external view returns(uint256[]){
+        return activeEggs;
+    }
+
+    // Get the amount of purchased eggs of a struct
+    function getPurchased(uint256 _eggId) external view returns(uint256){
+        return eggs[_eggId].purchased;
+    }
+
     // Set a new address for vault contract
     function setVaultAddress(address _vaultAddress) public onlyCEO returns (bool) {
         require( _vaultAddress != address(0x0) );
@@ -75,14 +88,6 @@ contract EggFactory is AccessControl{
         }
         
         return true;
-    }
-    
-    function listEggsIds() external view returns(uint256[]){
-        return eggsIndexes;
-    }
-    
-    function listActiveEggs() external view returns(uint256[]){
-        return activeEggs;
     }
     
     function setOpenStatusEgg( uint256 _eggId, bool state ) public onlyCEO returns (bool){
