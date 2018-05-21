@@ -110,8 +110,8 @@ contract EggFactory is AccessControl{
         eggs[_eggId].price = _price;
         eggs[_eggId].increase = _increase;
         
-        eggs[_eggId].active = _active;
-        eggs[_eggId].open = _open;
+        setActiveStatusEgg(_eggId,_active);
+        setOpenStatusEgg(_eggId,_open);
         
         eggsIndexes.push(_eggId);
         return true;
